@@ -1,0 +1,36 @@
+{% extends "index.html" %}
+{% block title %}update{% endblock title %}
+{% block update %}
+
+<h1 class='w-25 mx-auto text-center p-2'> Update User</h1>
+<form method='post'action={{url_for('update',user_id = user.user_id)}} class='w-25 gap-3 d-flex flex-column mx-auto p-5 pt-3'>
+    <!--label for should be equal to input id-->
+        <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="name" class="form-control" id="update_name" name='update_name' placeholder="name" required>
+        </div>
+        <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="update_email" name='update_email' placeholder="name@example.com" required>
+        </div>
+        <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="update_password" name='update_password' placeholder="password" required>
+        </div>
+        <button type='submit'> Submit </button>
+    </form>
+
+{% with messages=get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+{% for category,message in messages %}
+<div class="alert alert-{{category}}  mx-auto w-25 mt-3  alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close btn-{{category}}" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+{% endblock update %}

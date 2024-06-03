@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+
+{% block title %}Read{% endblock title %}
+
+{% block read %}
+<h1 class='text-center pt-3'>View Users</h1>
+
+<table class='text-center mx-auto'>
+    <tr class='text-center border px-2 py-2'>
+        <th class='text-center border px-2 py-2'>User id</th>
+        <th class='text-center border px-2 py-2'>Name</th>
+        <th class='text-center border px-2 py-2'>Email</th>
+        <th class='text-center border px-2 py-2'>Date joined</th>
+        <th class='text-center border px-2 py-2'>Actions</th>
+    </tr>
+    {% for d in data %}
+    <tr class='text-center border px-2 py-2'>
+        <td class='text-center border px-2 py-2'>{{d.user_id}}</td>
+        <td class='text-center border px-2 py-2'>{{d.name}}</td>
+        <td class='text-center border px-2 py-2'>{{d.email}}</td>
+        <td class='text-center border px-2 py-2'>{{d.date_joined}}</td>
+        <td class='text-center border px-2 py-2 d-flex gap-2 '>
+             
+            <form action='{{url_for('read')}}' method='post'>
+            <input type='hidden' name='update' value="{{d.user_id}}">
+            <button type="submit" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#updateModal">
+                Update
+            </button>
+            </form>
+            <!-- Button trigger modal -->
+            <form action='{{url_for('delete')}}' method='post'> 
+            <input type='hidden' name='delete' value="{{d.user_id}}">
+            <button type="submit" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            Delete
+            </button>
+            </form>
+       
+            <!-- Modal -->
+             <!-- <div class="modal fade " id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content w-75 px-3 py-3">
+                    <div class='d-flex justify-content-center gap-3 py-3'>
+                        <h2 class='fs-5'>Do you want to delete the user?</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <button type="button" class="btn btn-outline-danger w-25 mx-auto" data-bs-dismiss="modal">Delete</button>
+                </div>
+            </div>
+            </div> -->
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% with messages= get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+{% for category,message in messages %}
+<div class="alert alert-{{category}}  mx-auto w-25 mt-3  alert-dismissible fade show" role="alert">
+    {{message}}
+    <button type="button" class="btn-close btn-{{category}}" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+
+{% endif %}
+{% endwith %}
+
+{% endblock read %}
