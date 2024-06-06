@@ -16,6 +16,7 @@ class User(db.Model):
     email=db.Column(db.String(300), unique=True)
     date_joined=db.Column(db.Date, default=datetime.datetime.utcnow())
     password= db.Column(db.String(50), nullable=False)
+    relation = db.relationship('Blog', backref='user', lazy=True)
 
     def __init__(self,name,email,password):
         self.name=name
@@ -23,6 +24,18 @@ class User(db.Model):
         self.password=bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
     def check_password(self,password):
         return bcrypt.checkpw(password.encode('utf-8'),self.password.encode('utf-8'))
+    
+class Blog(db.Model):
+    blog_id =db.Column(db.Integer, primary_key=True)
+    title= db.Column(db.String(400),nullable=False)
+    blog=db.Column(db.Text,nullable=False)
+    time=db.Column(db.Date, default=datetime.datetime.now())
+    user_id= db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
+
+    def __init__(self,title,blog,user_id):
+        self.title=title
+        self.blog=blog
+        self.user_id=user_id
 
 
 with app.app_context():
@@ -31,16 +44,33 @@ with app.app_context():
 def is_logged_in():
     return 'logged_in' in session
 
+def get_logged_in_user():
+    if 'logged_in' in session and 'email' in session:
+        return{ 'email': session['email'], 'name': session['name']}
+    return None
+
 # Use a context processor to pass logged_in status to all templates:
 # Add a context processor to pass the logged_in status to all templates.
 @app.context_processor
-def inject_logged_in():
-    return dict(logged_in=is_logged_in())
+def inject_user():
+    return dict(logged_in=is_logged_in(),user=get_logged_in_user())
 
 
 @app.route("/", methods=['GET','POST'] )
 def hello_world():
-    return render_template('index.html', logged_in = is_logged_in())
+    # return render_template('index.html', logged_in = is_logged_in())
+    return render_template('index.html')
+@app.route("/home", methods=['GET','POST'] )
+def home():
+    return render_template('home.html')
+
+@app.route("/dashboard", methods=['GET','POST'] )
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/profile',methods=['GET','POST'])
+def profile():
+    return render_template('profile.html')
 
 @app.route('/read', methods=['GET','POST'])
 def read():
@@ -62,10 +92,11 @@ def update():
         user_name=request.form['update_name']
         user_email=request.form['update_email']
         user_password= request.form['update_password']
+        hashed_password=bcrypt.hashpw(user_password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
 
         user.name=user_name
         user.email=user_email
-        user.passowrd=user_password
+        user.password=hashed_password
         db.session.commit()
         flash("User details updated successfully",'success')
     return render_template('update.html',user=user)
@@ -109,7 +140,8 @@ def login():
         user=User.query.filter_by(email=email).first()
         if email and  user.check_password(password):
             session['email']=user.email
-            session['password']=user.password
+            # session['password']=user.password
+            session['name']=user.name
 
             session['logged_in']=True
 
