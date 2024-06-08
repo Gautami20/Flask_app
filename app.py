@@ -27,14 +27,14 @@ class User(db.Model):
     
 class Blog(db.Model):
     blog_id =db.Column(db.Integer, primary_key=True)
-    title= db.Column(db.String(400),nullable=False)
-    blog=db.Column(db.Text,nullable=False)
-    time=db.Column(db.Date, default=datetime.datetime.now())
+    blog_title= db.Column(db.String(400),nullable=False)
+    blog_body=db.Column(db.Text,nullable=False)
+    publish_time=db.Column(db.Date, default=datetime.datetime.now())
     user_id= db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
 
-    def __init__(self,title,blog,user_id):
-        self.title=title
-        self.blog=blog
+    def __init__(self,blog_title,blog_body,user_id):
+        self.blog_title=blog_title
+        self.blog_body=blog_body
         self.user_id=user_id
 
 
@@ -60,16 +60,23 @@ def inject_user():
 def hello_world():
     # return render_template('index.html', logged_in = is_logged_in())
     return render_template('index.html')
+
 @app.route("/home", methods=['GET','POST'] )
 def home():
     return render_template('home.html')
 
 @app.route("/dashboard", methods=['GET','POST'] )
 def dashboard():
-    return render_template('dashboard.html')
+    user=User.query.filter_by(email=session['email']).first()
+    user_id=user.user_id
+    blog=Blog.query.filter_by(user_id=user_id).all()
+    return render_template('dashboard.html',data=blog)
 
 @app.route('/profile',methods=['GET','POST'])
 def profile():
+    if get_logged_in_user():
+        user = User.query.filter_by(email=session['email']).first()
+        return render_template('profile.html',user=user)
     return render_template('profile.html')
 
 @app.route('/read', methods=['GET','POST'])
@@ -109,8 +116,11 @@ def delete():
         user= User.query.filter_by(user_id = user_id).first()
         db.session.delete(user)
         db.session.commit()
+        session.clear()
+        # session['logged_in'] = False
         flash("User Deleted successfully", 'danger')
-        return redirect("read")
+        # return redirect("read")
+        return redirect('register')
     return 'delete'
 
 # create
@@ -124,11 +134,12 @@ def register():
         user = User(name=name, email=email, password= password)
         db.session.add(user)
         db.session.commit()
+        session.clear()
         flash("User created successfully !!" , "success")
         # return redirect('login')
 
-    else:
-        flash("Please try with different email", "danger")
+    # else:
+    #     flash("Please try with different email", "danger")
 
     return render_template('register.html')
 
@@ -142,10 +153,10 @@ def login():
             session['email']=user.email
             # session['password']=user.password
             session['name']=user.name
-
             session['logged_in']=True
-
-            flash("User logged in successfully", 'success')     
+            return redirect('dashboard')
+            
+            # flash("User logged in successfully", 'success')     
         else:
             flash("Invalid credentials",'danger')         
     return render_template('login.html')
@@ -155,6 +166,33 @@ def logout():
     session.pop('logged_in',None)
     flash("user logged out !", 'danger')
     return redirect('login')
+
+@app.route('/addblog',methods=['GET','POST'])
+def addblog():
+    user = User.query.filter_by(email=session['email']).first()
+    if request.method=='POST':
+        blog_title=request.form['blog_title']
+        blog_body=request.form['blog_body']
+        user_id=request.form['delete']
+        blog=Blog(blog_title=blog_title,blog_body=blog_body,user_id=user_id)
+        db.session.add(blog)
+        db.session.commit()
+        return redirect('dashboard')
+    return render_template('addblog.html',user=user)
+
+@app.route('/blog_delete',methods=['GET','POST'])
+def blog_delete():
+    if request.method=='POST' :
+        blog_id=request.form['blog_delete']
+        blog=Blog.query.filter_by(blog_id=blog_id).first()
+        db.session.delete(blog)
+        db.session.commit()
+    return redirect('dashboard')
+
+@app.route('/blog_read')
+def blog_read():
+    blog=Blog.query.all()
+    return render_template('blog_read.html',blog=blog)
 
 if __name__ == '__main__':
     app.run(debug=True)

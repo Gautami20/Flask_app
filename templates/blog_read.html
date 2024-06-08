@@ -1,0 +1,31 @@
+{% extends "index.html" %}
+
+{% block title %}Blog All{% endblock title %}
+{% block blog_read %}
+<h1 class='w-25 mx-auto text-center p-2 position-relative'> All user's Blog </h1>
+{% for b in blog%}
+    <div class="card mx-auto m-3 shadow" style="width: 50vw; min-height:6.5rem">
+        <div class="card-body fw-bold text-uppercase">
+            <h5 class="card-title">{{b.blog_title}}</h5>
+
+                <button type="button" class="btn btn-outline-info mt-2" data-bs-toggle="modal" data-bs-target="#blogModal{{b.blog_id}}">View</button>
+                <!-- Modal -->
+                <div class="modal fade" id="blogModal{{b.blog_id}}" tabindex="-1" aria-labelledby="blogModalLabel{{b.blog_id}}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{b.blog_body}}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock blog_read %}

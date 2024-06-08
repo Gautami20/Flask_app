@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+{% block title %}New Blog{% endblock title %}
+
+{% block addblog %}
+<h3 class='text-center nx-auto p-3'> Write a new blog </h3>
+<div class='mx-auto w-75'>
+<form action='{{url_for('addblog')}}' method='post'>
+    <div class="mb-3">
+      <label for="blog_title" class="form-label text-uppercase fw-bold">Title</label>
+      <input type="text" class="form-control" id="blog_title" name='blog_title' placeholder="Blog title here" required>
+    </div>
+    <div class="mb-3">
+      <label for="blog_body" class="form-label text-uppercase fw-bold">Blog Writing</label>
+      <textarea class="form-control" id="blog_body" name='blog_body' rows="3" required></textarea>
+    </div>
+    <input type='hidden' name='delete' value={{user.user_id}}>
+    <button type='submit'class="btn btn-outline-success"> Submit </button> 
+</form>
+<div>
+{% endblock addblog %}
