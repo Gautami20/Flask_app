@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block title %}BlogUpdate{% endblock title %}
+
+{% block blog_update %}
+<h3 class='text-center nx-auto p-3'> Update your blog here </h3>
+
+<form action='{{ url_for('blog_update', blog_id=blog.blog_id) }}' method='post'>
+<div class='mx-auto w-75'>
+    <input type='hidden' name='blog_id' value={{blog_id}}>
+    <div class="mb-3">
+      <label for="update_blog_title" class="form-label text-uppercase fw-bold">Title</label>
+      <textarea type="text" class="form-control" id="update_blog_title" name='update_blog_title' row='1' required> {{blog.blog_title}} </textarea>
+    </div>
+    <div class="mb-3">
+      <label for="update_blog_body" class="form-label text-uppercase fw-bold">Blog Writing</label>
+      <textarea class="form-control" id="update_blog_body" name='update_blog_body' rows="9" required>{{blog.blog_body}}</textarea>
+    </div>
+    <!--<input type='hidden' name='blog_id' value={{blog_id}}>-->
+    <button type='submit'class="btn btn-outline-success"> Submit </button> 
+</form>
+<div>
+{% endblock blog_update %}

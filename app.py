@@ -70,6 +70,10 @@ def dashboard():
     user=User.query.filter_by(email=session['email']).first()
     user_id=user.user_id
     blog=Blog.query.filter_by(user_id=user_id).all()
+    if request.method=='POST':
+        blog_id=request.form['blog_id']
+        if blog_id:
+            return redirect(url_for('blog_update',blog_id=blog_id))
     return render_template('dashboard.html',data=blog)
 
 @app.route('/profile',methods=['GET','POST'])
@@ -193,6 +197,29 @@ def blog_delete():
 def blog_read():
     blog=Blog.query.all()
     return render_template('blog_read.html',blog=blog)
+
+@app.route('/blog_update', methods=['GET','POST'])
+def blog_update():
+    blog_id= request.args.get('blog_id')
+    # blog=Blog.query.filter_by(blog_id=blog_id).first()
+    blog=Blog.query.get_or_404(blog_id)
+    # if not blog : return redirect(url_for('dashboard'))
+    if request.method=='POST':
+        update_blog_title=request.form['update_blog_title']
+        update_blog_body=request.form['update_blog_body']
+        print(update_blog_title)
+
+        blog.blog_title=update_blog_title
+        blog.blog_body=update_blog_body
+        db.session.commit()
+        return redirect('dashboard')
+        
+    return render_template('blog_update.html',blog=blog)
+
+@app.route('/search')
+def search():
+    search=request.form['search']
+    view=Blog.query.filter_by(blog_title=search).first()
 
 if __name__ == '__main__':
     app.run(debug=True)
