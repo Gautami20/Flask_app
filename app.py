@@ -59,7 +59,7 @@ def inject_user():
 @app.route("/", methods=['GET','POST'] )
 def hello_world():
     # return render_template('index.html', logged_in = is_logged_in())
-    return render_template('index.html')
+    return render_template('home.html')
 
 @app.route("/home", methods=['GET','POST'] )
 def home():
@@ -207,7 +207,6 @@ def blog_update():
     if request.method=='POST':
         update_blog_title=request.form['update_blog_title']
         update_blog_body=request.form['update_blog_body']
-        print(update_blog_title)
 
         blog.blog_title=update_blog_title
         blog.blog_body=update_blog_body
@@ -216,10 +215,15 @@ def blog_update():
         
     return render_template('blog_update.html',blog=blog)
 
-@app.route('/search')
+@app.route('/search',methods=['GET','POST'])
 def search():
-    search=request.form['search']
-    view=Blog.query.filter_by(blog_title=search).first()
+    if request.method=='POST':
+        blog_title=request.form.get('search_blog')
+        print(blog_title)
+        blog=Blog.query.filter_by(blog_title=blog_title).first()
+        print(blog)
+        return render_template('search.html',blog=blog)
+    return 'search'
 
 if __name__ == '__main__':
     app.run(debug=True)

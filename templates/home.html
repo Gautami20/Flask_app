@@ -1,6 +1,56 @@
 {% extends "index.html" %}
 {% block title %}home{% endblock title %}
 {% block home %}
-<h1 class='w-25 mx-auto text-center p-2 position-relative'> Home</h1>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+:root{
+    --title_font:"Playfair Display", serif;
+    --default_font:"Lora", serif;
+    --styled_font:"Dancing Script", cursive;
+    :root{
+    --white:#fff;
+    --black:#000;
     
+    --dark:#171615;
+    --gray:#4d5156;
+    --lite:#e3e3e3;
+    
+    --primary:#4a752e;
+    --primary_dark:#febb8e;
+}
+.padding_1{
+    padding:1rem;
+}
+.styled_font{
+    font-family:var(--styled_font) !important;
+}
+.title, .sub_title{
+    font-family:var(--title_font);
+    margin:0;
+}
+.title{
+    letter-spacing: 2px
+}
+.big{
+    font-size: 6rem;
+    letter-spacing: 3px;
+}
+.homecontainer{
+    background-image:url("https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmxvZ3xlbnwwfHwwfHx8MA%3D%3D");
+    background-size: cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    overflow:hidden !important;
+}
+}
+    </style>
+</head>
+    <div class='homecontainer' style='height: 90vh; width:80vw'>
+    <article class="padding_1 mx-auto text-center p-2 position-absolute top-50 start-50 translate-middle">
+            <h3 class="title medium styled_font"><em>Held your thoughts here</em></h3>
+            <h1 class="title big"><em>BlogNest</em></h1>
+        </article>
+    </div>
 {% endblock home %}

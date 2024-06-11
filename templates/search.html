@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+
+{% block title %}Search{% endblock title %}
+{% block search %}
+<div class="card mx-auto m-3 shadow" style="width: 50vw; min-height:6.5rem">
+        <div class="card-body fw-bold text-uppercase">
+            <h5 class="card-title">{{blog.blog_title}}</h5>
+
+                <button type="button" class="btn btn-outline-info mt-2" data-bs-toggle="modal" data-bs-target="#blogModal{{blog.blog_id}}">View</button>
+                <!-- Modal -->
+                <div class="modal fade" id="blogModal{{blog.blog_id}}" tabindex="-1" aria-labelledby="blogModalLabel{{blog.blog_id}}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{blog.blog_body}}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <!--{% if blog %}
+        <h2>Blog Title: {{ blog.blog_title }}</h2>
+        <p>{{ blog.blog_body }}</p>
+    {% else %}
+        <p>No blog found.</p>
+    {% endif %}-->
+{% endblock search %}
